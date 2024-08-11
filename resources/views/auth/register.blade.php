@@ -2,11 +2,28 @@
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
+        <!-- Text Register-->
+        <div class="flex items-center justify-center mt-4">
+            <a style="font-size: 2rem; font-weight: bold; color: black;" 
+               class="hover:text-gray-950 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                {{ __('Register') }}
+            </a>
+        </div>   
+
+
         <!-- Name -->
         <div>
             <x-input-label for="name" :value="__('Name')" />
             <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
+        </div>
+
+        <!-- No Hp -->
+        <div class="mt-4">
+            <x-input-label for="phone" :value="__('No Hp')" />
+            <x-text-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="old('phone')" required autofocus autocomplete="tel" />
+            <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+
         </div>
 
         <!-- Email Address -->
@@ -39,14 +56,21 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
+        <!-- button register -->
+        <div class="flex items-center justify-center mt-4">
             <x-primary-button class="ms-4">
                 {{ __('Register') }}
             </x-primary-button>
+        </div>
+        
+        <!-- Text Login -->
+        <div class="flex items-center justify-center mt-4">
+            <a class="text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                {{ __('Already have account?') }}
+            </a>
+            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
+                {{ __('Login') }}
+            </a>
         </div>
     </form>
 </x-guest-layout>

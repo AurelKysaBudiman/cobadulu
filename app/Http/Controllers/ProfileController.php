@@ -1,52 +1,54 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
-use Illuminate\View\View;
+use App\Models\User; // Import User model
 
-class RegisteredUserController extends Controller
+class ProfileController extends Controller
 {
     /**
-     * Display the registration view.
+     * Show the form for editing the user's profile.
+     *
+     * @return \Illuminate\View\View
      */
-    public function create(): View
+    public function edit()
     {
-        return view('auth.register');
+        $user = Auth::user();
+        return view('profile.edit', compact('user'));
     }
 
     /**
-     * Handle an incoming registration request.
+     * Update the user's profile information.
      *
-     * @throws \Illuminate\Validation\ValidationException
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function update(Request $request)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+        $user = Auth::user();
+        // Make sure $user is an instance of User
+        if ($user instanceof User) {
+            $user->update($request->only('name', 'email', 'phone'));
+        }
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        
-
-        event(new Registered($user));
-
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->route('profile.edit')->with('success', 'Profile updated successfully.');
     }
-} 
+
+    /**
+     * Remove the user's profile.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy()
+    {
+        $user = Auth::user();
+        // Make sure $user is an instance of User
+        if ($user instanceof User) {
+            $user->delete();
+        }
+
+        return redirect()->route('home')->with('success', 'Profile deleted successfully.');
+    }
+}

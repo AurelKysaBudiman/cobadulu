@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Http\Request;
+
 
 class AuthenticatedSessionController extends Controller
 {
@@ -28,7 +29,16 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Ambil pengguna yang sedang diautentikasi
+        $user = Auth::user();
+
+        // Arahkan ke dashboard admin jika peran adalah 'admin'
+        if ($user->level === 'admin') {
+            return redirect()->intended('/admin/dashboard');
+        }
+
+        // Arahkan ke dashboard standar untuk pengguna lainnya
+        return redirect()->intended('/dashboard');
     }
 
     /**
